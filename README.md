@@ -78,3 +78,11 @@ snowflake_username=<user you created with permission to pipe>
 snowflake_region_id=<region is optional see docs ie: us-central1>
 snowflake_cloud_provider=<optional as well.  see docs: could be gcp (you can get this from your instance website full URL>
 ```
+
+# adding to your project
+You can just copy the one file or add via npm:
+```
+yarn add snowflake-ingest-node
+yarn add jwt-simple
+```
+There is a peer dependency on `jwt-simple`, so make sure it is added as well.  There are no other dependencies except for built-in node (https and crypto) modules.
