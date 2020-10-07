@@ -70,7 +70,7 @@ describe(' > Snowflake API harness', () => {
 ```
 
 # secrets and environment
-You'll want to ensure your secret is in a vault or secret management (I am storing the lookup key as an environment variable). The rest could come from environment or hard coding.  Here is a sample `.env` as above for running locally and against your setup in the cloud likely serverless:
+You'll want to ensure your private key is secure in a vault or secret management (I am storing the lookup key as an environment variable). The rest could come from environment or hard coding.  Here is a sample `.env` as above for running locally and against your setup in the cloud likely serverless:
 ```bash
 snowflake_private_key=<your key>
 snowflake_account=<snowflake account>
