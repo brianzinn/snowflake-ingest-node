@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import { ClientRequest, IncomingMessage } from 'http';
-import https, { RequestOptions } from 'https' // chosen over ie: axios to not bring in extra dep.
-import jwt from 'jwt-simple';
+import * as https from 'https';
+import * as jwt from 'jwt-simple';
 
 const USER_AGENT = 'snowpipe-ingest-node/0.0.1/node/npm';
 
@@ -16,7 +16,7 @@ export type RecordedCallResponse = {
 }
 
 export type RecordedCall = {
-    request: RequestOptions
+    request: https.RequestOptions
     response: RecordedCallResponse
 }
 
@@ -70,11 +70,15 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
             [EXPIRY_TIME]: Math.round(new Date().getTime() / 1000 + 60 * 59)
         }
 
+        if (jwt === undefined) {
+            console.error('"jwt-simple" not found (make sure to include this peer dependency in your project).')
+        }
+
         const bearer = jwt.encode(payload, privateKey, 'RS256');
         return bearer;
     }
     
-    const makeRequest = async (options: RequestOptions, endpointCallHistory: RecordedCall[], postBody?: string): Promise<string> => {
+    const makeRequest = async (options: https.RequestOptions, endpointCallHistory: RecordedCall[], postBody?: string): Promise<string> => {
         return new Promise<string>((resolve, reject) => {
             const req: ClientRequest = https.request(
                 options,
@@ -145,9 +149,9 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
     
         const path = `/v1/data/pipes/${pipeName}/insertFiles?requestId=${getRequestId()}`;
     
-        const jwt_token: string = await getBearerToken();
+        const jwtToken: string = await getBearerToken();
     
-        const options = {
+        const options: https.RequestOptions = {
             hostname: config.hostname,
             port: 443,
             path,
@@ -155,7 +159,7 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': postBody.length,
-                'Authorization': `Bearer ${jwt_token}`,
+                'Authorization': `Bearer ${jwtToken}`,
                 'User-Agent': USER_AGENT,
                 Accept: 'application/json'
             }
@@ -173,15 +177,15 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
             path += `&beginMark=${beginMark}`;
         }
     
-        const jwt_token: string = await getBearerToken();
+        const jwtToken: string = await getBearerToken();
     
-        const options = {
+        const options: https.RequestOptions = {
             hostname: config.hostname,
             port: 443,
             path,
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${jwt_token}`,
+                'Authorization': `Bearer ${jwtToken}`,
                 'User-Agent': USER_AGENT,
                 Accept: 'application/json'
             }
@@ -202,15 +206,15 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
             path += `&endTimeExclusive=${endTimeExclusive}`;
         }
     
-        const jwt_token: string = await getBearerToken();
+        const jwtToken: string = await getBearerToken();
     
-        const options = {
+        const options: https.RequestOptions = {
             hostname: config.hostname,
             port: 443,
             path,
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${jwt_token}`,
+                'Authorization': `Bearer ${jwtToken}`,
                 'User-Agent': USER_AGENT,
                 Accept: 'application/json'
             }
