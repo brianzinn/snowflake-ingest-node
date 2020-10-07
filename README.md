@@ -1,5 +1,10 @@
 # snowflake-ingest-node
-simple API wrapper for Snowpipe.  At time of writing only Python and Java were available SDKs
+simple API wrapper for Snowpipe for https://www.snowflake.com/ .  At time of writing only Python and Java were available SDKs
+
+snowpipe intro:
+https://docs.snowflake.com/en/user-guide/data-load-snowpipe-intro.html
+
+Note that there is also an auto-ingest feature built into snowflake.
 
 ```typescript
 import * as dotenv from 'dotenv';
