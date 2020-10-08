@@ -62,7 +62,7 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
         const ISSUED_AT_TIME = 'iat';
         const EXPIRY_TIME = 'exp';
         const SUBJECT = 'sub';
-        
+
         const payload = {
             [ISSUER]: `${config.account}.${config.username}.${signature}`,
             [SUBJECT]: `${config.account}.${config.username}`,
@@ -77,7 +77,7 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
         const bearer = jwt.encode(payload, privateKey, 'RS256');
         return bearer;
     }
-    
+
     const makeRequest = async (options: https.RequestOptions, endpointCallHistory: RecordedCall[], postBody?: string): Promise<string> => {
         return new Promise<string>((resolve, reject) => {
             const req: ClientRequest = https.request(
@@ -120,44 +120,52 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
                 }
                 reject(error);
             })
-    
+
             if (postBody) {
                 req.write(postBody);
             }
-    
+
             req.end();
         });
     }
-    
+
     /**
      * Snowflake recommends providing a random string with each request, e.g. a UUID.
      */
     const getRequestId = () => {
         return crypto.randomBytes(16).toString("hex");
     }
-    
+
     /**
      * https://docs.snowflake.com/en/user-guide/data-load-snowpipe-rest-apis.html#data-file-ingestion
      * 
      * @param filenames list of files to be ingested by snowflake
      * @param pipeName Case-sensitive, fully-qualified pipe name. For example, myDatabase.mySchema.myPipe.
      */
-    const insertFile = async (filenames: string[], pipeName: string): Promise<string> => {
-        const postBody = JSON.stringify({
-            "files": filenames.map(filename => ({path: filename}))
-        });
-    
+    const insertFile = async (pipeName: string, filenames: string[], postJSON: boolean = false): Promise<string> => {
+        let contentType;
+        let postBody;
+        if (postJSON === true) {
+            contentType = 'application/json';
+            postBody = JSON.stringify({
+                "files": filenames.map(filename => ({ path: filename }))
+            });
+        } else {
+            contentType = 'text/plain';
+            postBody = filenames.join('\n');
+        }
+
         const path = `/v1/data/pipes/${pipeName}/insertFiles?requestId=${getRequestId()}`;
-    
+
         const jwtToken: string = await getBearerToken();
-    
+
         const options: https.RequestOptions = {
             hostname: config.hostname,
             port: 443,
             path,
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': contentType,
                 'Content-Length': postBody.length,
                 'Authorization': `Bearer ${jwtToken}`,
                 'User-Agent': USER_AGENT,
@@ -166,7 +174,7 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
         };
         return await makeRequest(options, apiEndpointHistory.insertFile, postBody);
     }
-    
+
     /**
      * https://docs.snowflake.com/en/user-guide/data-load-snowpipe-rest-apis.html#endpoint-insertreport
      */
@@ -176,9 +184,9 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
         if (beginMark) {
             path += `&beginMark=${beginMark}`;
         }
-    
+
         const jwtToken: string = await getBearerToken();
-    
+
         const options: https.RequestOptions = {
             hostname: config.hostname,
             port: 443,
@@ -192,7 +200,7 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
         };
         return await makeRequest(options, apiEndpointHistory.insertReport);
     }
-    
+
     /**
      * 
      * @param pipeName Case-sensitive, fully-qualified pipe name. For example, myDatabase.mySchema.myPipe.
@@ -205,9 +213,9 @@ export const createSnowpipeAPI = (username: string, privateKey: string, account:
         if (endTimeExclusive) {
             path += `&endTimeExclusive=${endTimeExclusive}`;
         }
-    
+
         const jwtToken: string = await getBearerToken();
-    
+
         const options: https.RequestOptions = {
             hostname: config.hostname,
             port: 443,
