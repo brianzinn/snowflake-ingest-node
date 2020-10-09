@@ -1,6 +1,6 @@
 {
   "name": "snowflake-ingest-node",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "snowflake snowpipe API ingest for Node",
   "keywords": [
     "snowflake",
