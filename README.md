@@ -74,8 +74,11 @@ describe(' > Snowflake API harness', () => {
 });
 ```
 
-![Strongly Typed](https://raw.githubusercontent.com/brianzinn/snowflake-ingest-node/master/images/strong-typed.png)
-![Runtime Debug](https://raw.githubusercontent.com/brianzinn/snowflake-ingest-node/master/images/runtime-debug.png)
+> strongly typed Snowpipe API responses:
+![Strongly Typed](https://github.com/brianzinn/snowflake-ingest-node/raw/main/images/strong-typed.png)
+
+> runtime view (same as typings)
+![Runtime Debug](https://github.com/brianzinn/snowflake-ingest-node/raw/main/images/runtime-debug.png)
 
 # secrets and environment
 You'll want to ensure your private key is secure in a vault or secret management (I am storing the lookup key as an environment variable). The rest could come from environment or hard coding.  Here is a sample `.env` as above for running locally and against your setup in the cloud likely serverless:
