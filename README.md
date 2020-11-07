@@ -4,10 +4,8 @@ simple API wrapper for Snowpipe for https://www.snowflake.com/ .  At time of wri
 [![NPM version](http://img.shields.io/npm/v/snowflake-ingest-node.svg?style=flat-square)](https://www.npmjs.com/package/snowflake-ingest-node)
 [![NPM downloads](http://img.shields.io/npm/dm/snowflake-ingest-node.svg?style=flat-square)](https://www.npmjs.com/package/snowflake-ingest-node)
 
-snowpipe intro:
-https://docs.snowflake.com/en/user-guide/data-load-snowpipe-intro.html
-
-Note that there is also an auto-ingest feature built into snowflake.
+Here is an example serverless project that uses snowpipe and CDC:
+https://github.com/brianzinn/snowflake-cdc-example
 
 ```typescript
 import * as dotenv from 'dotenv';
@@ -20,11 +18,11 @@ describe(' > Snowflake API harness', () => {
     let snowpipeAPI: SnowpipeAPI;
     const getSnowpipeAPI = async (): Promise<SnowpipeAPI> => {
         const {
-            snowflake_username: username,
-            snowflake_region_id: regionId,
-            snowflake_cloud_provider: cloudProvider,
-            snowflake_account: account,
-            snowflake_private_key: privateKeyName
+            SNOWFLAKE_USERNAME: username,
+            SNOWFLAKE_REGION_ID: regionId,
+            SNOWFLAKE_CLOUD_PROVIDER: cloudProvider,
+            SNOWFLAKE_ACCOUNT: account,
+            SNOWFLAKE_PRIVATE_KEY_NAME: privateKeyName
         } = process.env;
         const privateKey = await getLatestSecret(privateKeyName);
         const result = createSnowpipeAPI(username, privateKey, account, regionId, cloudProvider, {
@@ -62,7 +60,7 @@ describe(' > Snowflake API harness', () => {
         console.log(snowflakeAPI.endpointHistory().insertReport[0].response);
     });
 
-    it('loadHistoryScan', async () => {
+    it.skip('loadHistoryScan', async () => {
         // start time is in ISO 8601 format zulu timezone.  Probably use a library like moment.tz.
         try {
             const response = await snowflakeAPI.loadHistoryScan(PIPE_NAME, '2020-10-14T02:00:00.000Z');
@@ -79,6 +77,11 @@ describe(' > Snowflake API harness', () => {
 
 > runtime view (same as typings)
 ![Runtime Debug](https://github.com/brianzinn/snowflake-ingest-node/raw/main/images/runtime-debug.png)
+
+snowpipe intro:
+https://docs.snowflake.com/en/user-guide/data-load-snowpipe-intro.html
+
+Note that there is also an auto-ingest feature built into snowflake.
 
 # secrets and environment
 You'll want to ensure your private key is secure in a vault or secret management (I am storing the lookup key as an environment variable). The rest could come from environment or hard coding.  Here is a sample `.env` as above for running locally and against your setup in the cloud likely serverless:
