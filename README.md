@@ -86,11 +86,11 @@ Note that there is also an auto-ingest feature built into snowflake.
 # secrets and environment
 You'll want to ensure your private key is secure in a vault or secret management (I am storing the lookup key as an environment variable). The rest could come from environment or hard coding.  Here is a sample `.env` as above for running locally and against your setup in the cloud likely serverless:
 ```bash
-snowflake_private_key=<your key>
-snowflake_account=<snowflake account>
-snowflake_username=<user you created with permission to pipe>
-snowflake_region_id=<region is optional see docs ie: us-central1>
-snowflake_cloud_provider=<optional as well.  see docs: could be gcp (you can get this from your instance website full URL>
+SNOWFLAKE_PRIVATE_KEY_NAME=<your key name in secrets manager>
+SNOWFLAKE_ACCOUNT=<snowflake account>
+SNOWFLAKE_USERNAME=<user you created with permission to pipe>
+SNOWFLAKE_REGION_ID=<region is optional see docs ie: us-central1>
+SNOWFLAKE_CLOUD_PROVIDER=<optional as well.  see docs: could be gcp (you can get this from your instance website full URL>
 ```
 
 # adding to your project
